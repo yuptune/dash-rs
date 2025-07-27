@@ -11,6 +11,7 @@ use syn::{
 
 use crate::utils;
 
+#[allow(clippy::large_enum_variant)]  // doesn't matter, we're in a proc-macro
 pub enum FieldMapping {
     /// An internal field that is mapped 1:1 to an API field
     OneToOne(OneToOne),

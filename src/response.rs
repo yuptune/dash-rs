@@ -76,11 +76,10 @@ pub fn parse_get_gj_levels_response(response: &str) -> Result<Vec<ListedLevel>, 
             let level: Level<()> = Level::from_gj_str(fragment)?;
             // Note: Cloning is cheap because none of the Thunks is evaluated, so we only have references lying
             // around.
-            let creator = creators.iter().find(|creator| creator.user_id == level.creator).map(Clone::clone);
+            let creator = creators.iter().find(|creator| creator.user_id == level.creator).cloned();
             let song = level
                 .custom_song
-                .and_then(|song_id| songs.iter().find(|song| song.song_id == song_id))
-                .map(Clone::clone);
+                .and_then(|song_id| songs.iter().find(|song| song.song_id == song_id)).cloned();
 
             Ok(Level {
                 level_id: level.level_id,

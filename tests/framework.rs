@@ -19,7 +19,7 @@ pub fn load_test_units<D>(unit_dir: impl AsRef<Path>) -> BTreeMap<PathBuf, TestU
 
         assert!(dir_entry.metadata().unwrap().is_dir());
 
-        map.insert(dir_entry.path(), TestUnit::new(&dir_entry.path()));
+        map.insert(dir_entry.path(), TestUnit::new(dir_entry.path()));
     }
 
     map

@@ -284,6 +284,7 @@ pub enum Password {
     /// * XOR the resulting string with the key `"26364"` (note that the XOR operation is performed
     ///   using the ASCII value of the characters in that string)
     /// * base64 encode the result of that
+    ///
     /// In-Game, passwords are sometimes left-padded with zeros. However, this is not a requirement
     /// for the game to be able to correctly process passwords, and merely an implementation detail
     /// that changed at some point after 1.7
@@ -350,7 +351,7 @@ impl Password {
     ///
     /// ## Arguments
     /// + `raw_password_data`: The raw data returned from the servers. Assumed to be follow the
-    /// encoding described in [`Password`]'s documentation
+    ///   encoding described in [`Password`]'s documentation
     fn from_robtop(raw_password_data: &str) -> Result<Self, ProcessError> {
         Ok(match raw_password_data {
             "0" => Password::NoCopy,
@@ -427,23 +428,23 @@ pub type ListedLevel<'a> = Level<'a, (), Option<NewgroundsSong<'a>>, Option<Crea
 ///
 /// ### Unmapped values:
 /// + Index `8`: Index 8 is a boolean value indicating whether the level has a
-/// difficulty rating that isn't N/A. This is equivalent to checking if
-/// [`Level::difficulty`] is unequal to
-/// [`LevelRating::NotAvailable`]
+///   difficulty rating that isn't N/A. This is equivalent to checking if
+///   [`Level::difficulty`] is unequal to
+///   [`LevelRating::NotAvailable`]
 /// + Index `17`: Index 17 is a boolean value indicating whether
-/// the level is a demon level. This is equivalent to checking if
-/// [`Level::difficulty`] is the [`LevelRating::Demon`] variant.
+///   the level is a demon level. This is equivalent to checking if
+///   [`Level::difficulty`] is the [`LevelRating::Demon`] variant.
 /// + Index `25`: Index 25 is a boolean value indicating
-/// whether the level is an auto level. This is equivalent to checking if
-/// [`Level::difficulty`] is equal to
-/// [`LevelRating::Auto`]
+///   whether the level is an auto level. This is equivalent to checking if
+///   [`Level::difficulty`] is equal to
+///   [`LevelRating::Auto`]
 /// + Index `43`: This index is an indicator of demon difficulty as follows:
-///  3 = easy demon,
-///  4 = medium demon,
-///  5 = insane demon,
-///  6 = extreme demon.
-/// In other cases it's hard demon (thanks Ryder!). However, since we extract this information from
-/// index 9, dash-rs ignores this value.
+///   3 = easy demon,
+///   4 = medium demon,
+///   5 = insane demon,
+///   6 = extreme demon.
+///   In other cases it's hard demon (thanks Ryder!). However, since we extract this information from
+///   index 9, dash-rs ignores this value.
 ///
 /// ### Value only provided via `downloadGJLevels`
 /// These values are not provided for by the `getGJLevels` endpoint and are
@@ -957,7 +958,7 @@ mod tests {
     #[test]
     fn serialize_password() {
         let encoded = robtop_encode_level_password(123456);
-        let result = URL_SAFE.encode(&encoded);
+        let result = URL_SAFE.encode(encoded);
 
         assert_eq!(result, "AwcBBQAHAA==")
     }
@@ -968,8 +969,8 @@ mod tests {
         // in-game code for padding is inconsistent, see above test cases
 
         // password of 'Time Pressure' by AeonAir
-        assert_eq!(URL_SAFE.encode(&robtop_encode_level_password(3101)), "AwYDBQUCBw==");
+        assert_eq!(URL_SAFE.encode(robtop_encode_level_password(3101)), "AwYDBQUCBw==");
         // password of 'Breakthrough' by Hinds1324
-        assert_eq!(URL_SAFE.encode(&robtop_encode_level_password(0)), "AwYDBgQCBg==")
+        assert_eq!(URL_SAFE.encode(robtop_encode_level_password(0)), "AwYDBgQCBg==")
     }
 }

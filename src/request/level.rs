@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use crate::{
     model::{
         level::{DemonRating, LevelLength, LevelRating},
@@ -89,9 +90,9 @@ impl<'a> LevelRequest<'a> {
     }
 }
 
-impl ToString for LevelRequest<'_> {
-    fn to_string(&self) -> String {
-        super::to_string(self)
+impl Display for LevelRequest<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", super::to_string(self))
     }
 }
 
@@ -219,6 +220,7 @@ pub struct SearchFilters {
     /// * `completedLevels` is a list of levels ids that have been completed. It needs to be
     ///   provided if, and only if, either `uncompleted` or `onlyCompleted` are set to `1`. The ids
     ///   are comma seperated and enclosed by parenthesis.
+    ///
     /// If no completion filtering is desired, both boolean fields are set to `0` and
     /// `completedLevels` is omitted.
     pub completion: CompletionFilter,
@@ -288,7 +290,7 @@ impl SearchFilters {
 /// ## GD Internals:
 /// + Unused values: `8`, `9`, `14`
 /// + The values `15` and `17` are only used in Geometry Dash World and are the
-/// same as `0` ([`LevelRequestType::Search`]) and `6` ([`LevelRequestType::Featured`]) respectively
+///   same as `0` ([`LevelRequestType::Search`]) and `6` ([`LevelRequestType::Featured`]) respectively
 #[derive(Debug, Copy, Clone, PartialEq, Hash, Serialize, Deserialize, Default)]
 #[serde(from = "i32", into = "i32")]
 pub enum LevelRequestType {
@@ -588,9 +590,9 @@ impl<'a> LevelsRequest<'a> {
     }
 }
 
-impl ToString for LevelsRequest<'_> {
-    fn to_string(&self) -> String {
-        super::to_string(self)
+impl Display for LevelsRequest<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", super::to_string(self))
     }
 }
 

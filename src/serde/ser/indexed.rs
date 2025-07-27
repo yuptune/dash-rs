@@ -72,7 +72,7 @@ where
     }
 }
 
-impl<'a, W: Write> Serializer for &'a mut IndexedSerializer<W> {
+impl<W: Write> Serializer for &mut IndexedSerializer<W> {
     type Error = Error;
     type Ok = ();
     type SerializeMap = Impossible<(), Error>;
@@ -160,9 +160,9 @@ impl<'a, W: Write> Serializer for &'a mut IndexedSerializer<W> {
         Ok(())
     }
 
-    fn serialize_some<T: ?Sized>(self, value: &T) -> Result<Self::Ok, Self::Error>
+    fn serialize_some<T>(self, value: &T) -> Result<Self::Ok, Self::Error>
     where
-        T: Serialize,
+        T: Serialize + ?Sized
     {
         value.serialize(self)
     }
@@ -179,18 +179,18 @@ impl<'a, W: Write> Serializer for &'a mut IndexedSerializer<W> {
         Err(Error::Unsupported("serialize_unit_variant"))
     }
 
-    fn serialize_newtype_struct<T: ?Sized>(self, _name: &'static str, _value: &T) -> Result<Self::Ok, Self::Error>
+    fn serialize_newtype_struct<T>(self, _name: &'static str, _value: &T) -> Result<Self::Ok, Self::Error>
     where
-        T: Serialize,
+        T: Serialize + ?Sized
     {
         Err(Error::Unsupported("serialize_newtype_struct"))
     }
 
-    fn serialize_newtype_variant<T: ?Sized>(
+    fn serialize_newtype_variant<T>(
         self, _name: &'static str, _variant_index: u32, _variant: &'static str, _value: &T,
     ) -> Result<Self::Ok, Self::Error>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         Err(Error::Unsupported("serialize_newtype_variant"))
     }
@@ -228,21 +228,21 @@ impl<'a, W: Write> Serializer for &'a mut IndexedSerializer<W> {
         Err(Error::Unsupported("serialize_struct_variant"))
     }
 
-    fn collect_str<T: ?Sized>(self, _value: &T) -> Result<Self::Ok, Self::Error>
+    fn collect_str<T>(self, _value: &T) -> Result<Self::Ok, Self::Error>
     where
-        T: Display,
+        T: Display + ?Sized,
     {
         Err(Error::Unsupported("collect_str"))
     }
 }
 
-impl<'a, W: Write> SerializeStruct for &'a mut IndexedSerializer<W> {
-    type Error = Error;
+impl<W: Write> SerializeStruct for &mut IndexedSerializer<W> {
     type Ok = ();
+    type Error = Error;
 
-    fn serialize_field<T: ?Sized>(&mut self, key: &'static str, value: &T) -> Result<(), Self::Error>
+    fn serialize_field<T>(&mut self, key: &'static str, value: &T) -> Result<(), Self::Error>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         if self.map_like {
             self.append(key)?;

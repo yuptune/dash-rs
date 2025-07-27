@@ -32,7 +32,7 @@ pub trait GJFormat<'de>: Dash<'de> {
     const DELIMITER: &'static str;
     const MAP_LIKE: bool;
 
-    fn from_gj_str(input: &'de str) -> Result<Self, de::error::Error> {
+    fn from_gj_str(input: &'de str) -> Result<Self, de::error::Error<'de>> {
         let mut indexed_deserializer = IndexedDeserializer::new(input, Self::DELIMITER, Self::MAP_LIKE);
 
         Self::dash_deserialize(&mut indexed_deserializer)

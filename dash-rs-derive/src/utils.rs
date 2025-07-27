@@ -5,7 +5,7 @@ use syn::{spanned::Spanned, Error, Generics, LifetimeParam, Result, Type};
 /// lifetimes, or too many lifetimes
 pub fn find_unique_lifetime(generics: &Generics) -> Result<Option<LifetimeParam>> {
     let mut lifetime_iter = generics.lifetimes();
-    let first_lifetime = lifetime_iter.next().map(Clone::clone);
+    let first_lifetime = lifetime_iter.next().cloned();
 
     if let Some(lifetime_param) = lifetime_iter.next() {
         return Err(Error::new(lifetime_param.span(), "Expected exactly one lifetime, found multiple"));

@@ -35,10 +35,10 @@ macro_rules! dev_debug {
 /// There are two variants of this format:
 ///
 /// * **Map-like**: Every second field is an key, which is almost always an integer. This key is
-/// unique and tells us which field follows.
+///   unique and tells us which field follows.
 /// * **List-like**: There are no keys, identification of
-/// fields has to occur based on the how many-th field they are. In this case the deserializer
-/// generates artificial indices (which just count up by 1 for each field) for error messages.
+///   fields has to occur based on the how many-th field they are. In this case the deserializer
+///   generates artificial indices (which just count up by 1 for each field) for error messages.
 #[derive(Debug)]
 pub struct IndexedDeserializer<'de> {
     map_like: bool,
@@ -127,7 +127,7 @@ macro_rules! delegate_to_from_str {
     };
 }
 
-impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
+impl<'de> Deserializer<'de> for &mut IndexedDeserializer<'de> {
     type Error = Error<'de>;
 
     delegate_to_from_str!(deserialize_i8, visit_i8);

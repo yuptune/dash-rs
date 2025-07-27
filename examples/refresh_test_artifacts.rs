@@ -39,7 +39,7 @@ async fn main() {
     std::fs::remove_dir_all(&artifacts_backup).unwrap();
 }
 
-async fn refresh_full_levels(artifacts_path: &PathBuf, http_client: &Client) {
+async fn refresh_full_levels(artifacts_path: &Path, http_client: &Client) {
     println!("Downloading full levels");
 
     let levels_path = artifacts_path.join("level");
@@ -62,7 +62,7 @@ async fn refresh_full_levels(artifacts_path: &PathBuf, http_client: &Client) {
     }
 }
 
-async fn refresh_listed_levels(artifacts_path: &PathBuf, http_client: &Client) {
+async fn refresh_listed_levels(artifacts_path: &Path, http_client: &Client) {
     println!("Downloading listed levels");
 
     let listed_levels_path = artifacts_path.join("listed_level");
@@ -79,7 +79,7 @@ async fn refresh_listed_levels(artifacts_path: &PathBuf, http_client: &Client) {
     let request = LevelsRequest::default()
         .search_filters(SearchFilters::default().completion_filter(CompletionFilter::limit_search(levels_to_dowload)));
 
-    let response = make_request(&http_client, &request.to_url(), request.to_string()).await;
+    let response = make_request(http_client, &request.to_url(), request.to_string()).await;
     let response_text = response.text().await.unwrap();
 
     // We'll have to reimplement part of the response parsing here, `parse_get_gj_levels_response` is
@@ -95,7 +95,7 @@ async fn refresh_listed_levels(artifacts_path: &PathBuf, http_client: &Client) {
         let level_artifact_path = listed_levels_path.join(level.level_id.to_string());
         let _ = std::fs::create_dir_all(&level_artifact_path);
 
-        std::fs::write(level_artifact_path.join("raw"), &raw_level).unwrap();
+        std::fs::write(level_artifact_path.join("raw"), raw_level).unwrap();
         dump_deserialized_artifact(level_artifact_path, &level);
     }
 
@@ -105,7 +105,7 @@ async fn refresh_listed_levels(artifacts_path: &PathBuf, http_client: &Client) {
         let creator_artifact_path = creators_path.join(creator.user_id.to_string());
         let _ = std::fs::create_dir_all(&creator_artifact_path);
 
-        std::fs::write(creator_artifact_path.join("raw"), &raw_creator).unwrap();
+        std::fs::write(creator_artifact_path.join("raw"), raw_creator).unwrap();
         dump_deserialized_artifact(creator_artifact_path, &creator);
     }
 
@@ -115,12 +115,12 @@ async fn refresh_listed_levels(artifacts_path: &PathBuf, http_client: &Client) {
         let song_artifact_path = songs_path.join(song.song_id.to_string());
         let _ = std::fs::create_dir_all(&song_artifact_path);
 
-        std::fs::write(song_artifact_path.join("raw"), &raw_song).unwrap();
+        std::fs::write(song_artifact_path.join("raw"), raw_song).unwrap();
         dump_deserialized_artifact(song_artifact_path, &song);
     }
 }
 
-async fn refresh_profiles(artifacts_path: &PathBuf, http_client: &Client) {
+async fn refresh_profiles(artifacts_path: &Path, http_client: &Client) {
     println!("Downloading profiles");
 
     let profiles_path = artifacts_path.join("profile");
@@ -128,7 +128,7 @@ async fn refresh_profiles(artifacts_path: &PathBuf, http_client: &Client) {
 
     for account_id in profiles_to_download {
         let request = UserRequest::new(account_id);
-        let response = make_request(&http_client, &request.to_url(), request.to_string()).await;
+        let response = make_request(http_client, &request.to_url(), request.to_string()).await;
         let response_text = response.text().await.unwrap();
 
         let profile = parse_get_gj_user_info_response(&response_text).unwrap();
@@ -141,7 +141,7 @@ async fn refresh_profiles(artifacts_path: &PathBuf, http_client: &Client) {
     }
 }
 
-async fn refresh_searched_users(artifacts_path: &PathBuf, http_client: &Client) {
+async fn refresh_searched_users(artifacts_path: &Path, http_client: &Client) {
     println!("Downloading search-listed users");
 
     let searched_users_path = artifacts_path.join("searched_user");
@@ -149,15 +149,15 @@ async fn refresh_searched_users(artifacts_path: &PathBuf, http_client: &Client) 
 
     for username in users_to_search {
         let request = UserSearchRequest::new(username);
-        let response = make_request(&http_client, &request.to_url(), request.to_string()).await;
+        let response = make_request(http_client, &request.to_url(), request.to_string()).await;
         let response_text = response.text().await.unwrap();
 
         let searched_user = parse_get_gj_users_response(&response_text).unwrap();
 
-        let searched_user_artifact_path = searched_users_path.join(username.to_string());
+        let searched_user_artifact_path = searched_users_path.join(username);
         let _ = std::fs::create_dir_all(&searched_user_artifact_path);
 
-        std::fs::write(searched_user_artifact_path.join("raw"), &response_text.split('#').next().unwrap()).unwrap();
+        std::fs::write(searched_user_artifact_path.join("raw"), response_text.split('#').next().unwrap()).unwrap();
         dump_deserialized_artifact(searched_user_artifact_path, &searched_user);
     }
 }

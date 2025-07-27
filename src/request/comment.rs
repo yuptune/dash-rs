@@ -1,5 +1,6 @@
 //! Module containing request structs for retrieving profile/level comments
 
+use std::fmt::Display;
 use crate::{
     model::level::Level,
     request::{endpoint_base_url, BaseRequest, GD_22},
@@ -113,9 +114,9 @@ impl<'a> LevelCommentsRequest<'a> {
     }
 }
 
-impl ToString for LevelCommentsRequest<'_> {
-    fn to_string(&self) -> String {
-        super::to_string(self)
+impl Display for LevelCommentsRequest<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", super::to_string(self))
     }
 }
 
@@ -181,9 +182,9 @@ impl<'a> ProfileCommentsRequest<'a> {
     }
 }
 
-impl ToString for ProfileCommentsRequest<'_> {
-    fn to_string(&self) -> String {
-        super::to_string(self)
+impl Display for ProfileCommentsRequest<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", super::to_string(self))
     }
 }
 

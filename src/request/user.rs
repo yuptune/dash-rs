@@ -1,5 +1,6 @@
 //! Module containing request definitions for retrieving users
 
+use std::fmt::Display;
 use crate::{
     model::creator::Creator,
     request::{endpoint_base_url, BaseRequest, GD_22},
@@ -51,9 +52,9 @@ impl From<Creator<'_>> for UserRequest<'_> {
     }
 }
 
-impl ToString for UserRequest<'_> {
-    fn to_string(&self) -> String {
-        super::to_string(self)
+impl Display for UserRequest<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", super::to_string(self))
     }
 }
 
@@ -114,8 +115,8 @@ impl<'a: 'b, 'b> From<&'b Creator<'a>> for UserSearchRequest<'b> {
     }
 }
 
-impl ToString for UserSearchRequest<'_> {
-    fn to_string(&self) -> String {
-        super::to_string(self)
+impl Display for UserSearchRequest<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", super::to_string(self))
     }
 }
