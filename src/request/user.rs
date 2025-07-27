@@ -1,11 +1,11 @@
 //! Module containing request definitions for retrieving users
 
-use std::fmt::Display;
 use crate::{
     model::creator::Creator,
     request::{endpoint_base_url, BaseRequest, GD_22},
 };
 use serde::Serialize;
+use std::fmt::Display;
 
 pub const GET_USER_ENDPOINT: &str = "getGJUserInfo20.php";
 pub const SEARCH_USER_ENDPOINT: &str = "getGJUsers20.php";

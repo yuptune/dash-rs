@@ -1,11 +1,11 @@
 //! Module containing request structs for retrieving profile/level comments
 
-use std::fmt::Display;
 use crate::{
     model::level::Level,
     request::{endpoint_base_url, BaseRequest, GD_22},
 };
 use serde::Serialize;
+use std::fmt::Display;
 
 pub const LEVEL_COMMENTS_ENDPOINT: &str = "getGJComments21.php";
 pub const PROFILE_COMMENT_ENDPOINT: &str = "getGJAccountComments20.php";

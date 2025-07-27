@@ -162,7 +162,7 @@ impl<W: Write> Serializer for &mut IndexedSerializer<W> {
 
     fn serialize_some<T>(self, value: &T) -> Result<Self::Ok, Self::Error>
     where
-        T: Serialize + ?Sized
+        T: Serialize + ?Sized,
     {
         value.serialize(self)
     }
@@ -181,7 +181,7 @@ impl<W: Write> Serializer for &mut IndexedSerializer<W> {
 
     fn serialize_newtype_struct<T>(self, _name: &'static str, _value: &T) -> Result<Self::Ok, Self::Error>
     where
-        T: Serialize + ?Sized
+        T: Serialize + ?Sized,
     {
         Err(Error::Unsupported("serialize_newtype_struct"))
     }

@@ -1,4 +1,3 @@
-use std::fmt::Display;
 use crate::{
     model::{
         level::{DemonRating, LevelLength, LevelRating},
@@ -7,6 +6,7 @@ use crate::{
     request::{endpoint_base_url, BaseRequest, GD_22},
 };
 use serde::{Deserialize, Serialize, Serializer};
+use std::fmt::Display;
 
 pub const DOWNLOAD_LEVEL_ENDPOINT: &str = "downloadGJLevel22.php";
 pub const SEARCH_LEVEL_ENDPOINT: &str = "getGJLevels21.php";
