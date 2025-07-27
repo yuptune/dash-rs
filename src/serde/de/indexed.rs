@@ -12,16 +12,16 @@ use std::str::Split;
 // in release mode. We do not want to explicitly pass "release_max_level_off" feature to log because
 // we're in a library crate, and since features are additive, that would turn off release mode
 // logging in every crate that depends on dash-rs.
-macro_rules! trace {
+macro_rules! dev_trace {
     ($($t:tt)*) => {
-        #[cfg(debug_assertions)]
+        #[cfg(dash_rs_dev_debug)]
         log::trace!($($t)*)
     };
 }
 
-macro_rules! debug {
+macro_rules! dev_debug {
     ($($t:tt)*) => {
-        #[cfg(debug_assertions)]
+        #[cfg(dash_rs_dev_debug)]
         log::debug!($($t)*)
     };
 }
@@ -57,7 +57,7 @@ impl<'de> IndexedDeserializer<'de> {
     /// * *map_like*: Whether the input is in map-like format or not (meaning it is in list-like
     ///   format)
     pub fn new(source: &'de str, delimiter: &'static str, map_like: bool) -> Self {
-        trace!("Deserializing {} with delimiter '{}', maplike {}", source, delimiter, map_like);
+        dev_trace!("Deserializing {} with delimiter '{}', maplike {}", source, delimiter, map_like);
 
         IndexedDeserializer {
             splitter: source.split(delimiter),
@@ -77,7 +77,7 @@ impl<'de> IndexedDeserializer<'de> {
         let tok = self.splitter.next()?;
         self.end_of_current_token = tok.as_ptr() as usize + tok.len();
 
-        trace!("Splitting off token {}, remaining input: {}", tok, &self.input[self.position()..]);
+        dev_trace!("Splitting off token {}, remaining input: {}", tok, &self.input[self.position()..]);
 
         Some(tok)
     }
@@ -107,7 +107,7 @@ macro_rules! delegate_to_from_str {
         {
             let token = self.consume_token();
 
-            trace!(
+            dev_trace!(
                 "RobtopDeserializer::{} called called on {:?}",
                 stringify!($deserialize_method),
                 token
@@ -164,7 +164,7 @@ impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
     {
         let token = self.consume_token();
 
-        trace!("RobtopDeserializer::deserialize_bool called on {:?}", token);
+        dev_trace!("RobtopDeserializer::deserialize_bool called on {:?}", token);
 
         // Alright so robtop's encoding of boolean is the most inconsistent shit ever. The possible values
         // for `false` are "0" or the empty string. The possible values for `true` are 1, 2 or 10. While
@@ -196,7 +196,7 @@ impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
     {
         let token = self.consume_token();
 
-        trace!("RobtopDeserializer::deserialize_str called on {:?}", token);
+        dev_trace!("RobtopDeserializer::deserialize_str called on {:?}", token);
 
         visitor.visit_borrowed_str(token.ok_or(Error::Eof)?)
     }
@@ -207,7 +207,7 @@ impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
     {
         let token = self.consume_token();
 
-        trace!("RobtopDeserializer::deserialize_string called on {:?}", token);
+        dev_trace!("RobtopDeserializer::deserialize_string called on {:?}", token);
 
         visitor.visit_borrowed_str(token.ok_or(Error::Eof)?)
     }
@@ -231,13 +231,13 @@ impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
         V: Visitor<'de>,
     {
         if self.is_eof() || self.is_next_empty() {
-            trace!("RobtopDeserializer::deserialize_option called on empty string or EOF");
+            dev_trace!("RobtopDeserializer::deserialize_option called on empty string or EOF");
 
             let _ = self.consume_token(); // potentially skip the empty string. Explicitly ignore the return value in case we have Error::Eof
 
             visitor.visit_none()
         } else {
-            trace!("RobtopDeserializer::deserialize_option called 'Some(_)')");
+            dev_trace!("RobtopDeserializer::deserialize_option called 'Some(_)')");
 
             visitor.visit_some(self)
         }
@@ -321,7 +321,7 @@ impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
     where
         V: Visitor<'de>,
     {
-        trace!("RobtopDeserializer::deserialize_identifier called");
+        dev_trace!("RobtopDeserializer::deserialize_identifier called");
 
         self.deserialize_str(visitor)
     }
@@ -336,7 +336,7 @@ impl<'a, 'de> Deserializer<'de> for &'a mut IndexedDeserializer<'de> {
         // the visitor. Because idk what we really wanna do here otherwise
         let _token = self.consume_token();
 
-        debug!(
+        dev_debug!(
             "Ignored token {:?}. Preceding token (potentially an unmapped index) was {:?}",
             _token,
             self.nth_last(1)
@@ -366,7 +366,7 @@ impl<'a, 'de> de::SeqAccess<'de> for SeqAccess<'a, 'de> {
     {
         self.index += 1;
 
-        trace!("Deserializing list entry at index {}", self.index);
+        dev_trace!("Deserializing list entry at index {}", self.index);
 
         match seed.deserialize(&mut *self.deserializer) {
             Err(Error::Eof) => Ok(None),
@@ -392,7 +392,7 @@ impl<'a, 'de> de::MapAccess<'de> for MapAccess<'a, 'de> {
     where
         K: DeserializeSeed<'de>,
     {
-        trace!("Processing a map key");
+        dev_trace!("Processing a map key");
 
         match seed.deserialize(&mut *self.deserializer) {
             Err(Error::Eof) => Ok(None),
@@ -410,7 +410,7 @@ impl<'a, 'de> de::MapAccess<'de> for MapAccess<'a, 'de> {
     where
         V: DeserializeSeed<'de>,
     {
-        trace!("Processing a map value",);
+        dev_trace!("Processing a map value");
 
         match seed.deserialize(&mut *self.deserializer) {
             Err(Error::Custom { message, value, .. }) => Err(Error::Custom {

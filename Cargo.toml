@@ -38,3 +38,6 @@ serde_yaml = "0.9.29"
 [[bench]]
 name = "level_processing_benchmark"
 harness = false
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(dash_rs_dev_debug)'] }
