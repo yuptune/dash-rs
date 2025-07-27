@@ -47,10 +47,10 @@ pub mod comment;
 pub mod level;
 pub mod user;
 
-pub static GD_SERVER_ENDPOINT_BASE_URL: OnceLock<&'static str> = OnceLock::new();
+pub static GD_SERVER_ENDPOINT_BASE_URL: OnceLock<String> = OnceLock::new();
 
 pub fn endpoint_base_url() -> &'static str {
-    GD_SERVER_ENDPOINT_BASE_URL.get_or_init(|| BOOMLINGS_ENDPOINTS_BASE)
+    GD_SERVER_ENDPOINT_BASE_URL.get_or_init(|| BOOMLINGS_ENDPOINTS_BASE.to_string())
 }
 
 pub const BOOMLINGS_ENDPOINTS_BASE: &str = "https://www.boomlings.com/database/";
