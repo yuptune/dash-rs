@@ -6,6 +6,7 @@ use crate::{
     request::{endpoint_base_url, BaseRequest, GD_22},
 };
 use serde::{Deserialize, Serialize, Serializer};
+use std::borrow::Cow;
 use std::fmt::Display;
 
 pub const DOWNLOAD_LEVEL_ENDPOINT: &str = "downloadGJLevel22.php";
@@ -471,7 +472,7 @@ pub struct LevelsRequest<'a> {
     /// ## GD Internals:
     /// This field is called `str` in the boomlings API
     #[serde(rename = "str")]
-    pub search_string: &'a str,
+    pub search_string: Cow<'a, str>,
 
     /// A list of level lengths to filter by
     ///
@@ -550,8 +551,8 @@ impl<'a> LevelsRequest<'a> {
 
     /// Turns this request into a [`LevelRequestType::Search`]-type request, with the search
     /// parameter set to the given string
-    pub const fn search(mut self, search_string: &'a str) -> Self {
-        self.search_string = search_string;
+    pub fn search(mut self, search_string: impl Into<Cow<'a, str>>) -> Self {
+        self.search_string = search_string.into();
         self.request_type = LevelRequestType::Search;
         self
     }

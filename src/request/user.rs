@@ -5,6 +5,7 @@ use crate::{
     request::{endpoint_base_url, BaseRequest, GD_22},
 };
 use serde::Serialize;
+use std::borrow::Cow;
 use std::fmt::Display;
 
 pub const GET_USER_ENDPOINT: &str = "getGJUserInfo20.php";
@@ -58,7 +59,7 @@ impl Display for UserRequest<'_> {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct UserSearchRequest<'a> {
     /// The base request data
     pub base: BaseRequest<'a>,
@@ -85,16 +86,16 @@ pub struct UserSearchRequest<'a> {
     /// ## GD Internals:
     /// This field is called `str` in the boomlings API
     #[serde(rename = "str")]
-    pub search_string: &'a str,
+    pub search_string: Cow<'a, str>,
 }
 
 impl<'a> UserSearchRequest<'a> {
-    pub const fn new(search_string: &'a str) -> Self {
+    pub fn new(search_string: impl Into<Cow<'a, str>>) -> Self {
         UserSearchRequest {
             base: GD_22,
             total: 0,
             page: 0,
-            search_string,
+            search_string: search_string.into(),
         }
     }
 
