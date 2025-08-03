@@ -53,7 +53,7 @@ pub fn endpoint_base_url() -> &'static str {
     GD_SERVER_ENDPOINT_BASE_URL.get_or_init(|| BOOMLINGS_ENDPOINTS_BASE.to_string())
 }
 
-pub const BOOMLINGS_ENDPOINTS_BASE: &str = "https://www.silverragdps.mathieuar.fr";
+pub const BOOMLINGS_ENDPOINTS_BASE: &str = "https://silverragdps.mathieuar.fr/";
 
 /// A `BaseRequest` instance that has all its fields set to the
 /// same values a Geometry Dash 2.1 client would use
